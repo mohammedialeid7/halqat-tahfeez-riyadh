@@ -1,4 +1,6 @@
-export type DistrictFilter = 'الكل' | string;
+export type AgeGroup = 'أطفال' | 'يافعين' | 'شباب' | 'كبار';
+
+export type TimeSlot = 'صباح' | 'ظهر' | 'عصر' | 'مغرب' | 'عشاء';
 
 export type Circle = {
   id: string;
@@ -8,6 +10,7 @@ export type Circle = {
   startsAt: string; // ISO
   durationMin: number;
   focus: string;
+  ageGroup: AgeGroup;
   capacity: number;
   joinedCount: number;
   address: string;

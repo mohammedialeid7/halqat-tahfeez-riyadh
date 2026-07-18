@@ -76,6 +76,7 @@ export default function CircleDetailScreen() {
 
         <Animated.View entering={FadeInUp.delay(120).duration(420)} style={styles.facts}>
           <Fact label="المدة" value={`${circle.durationMin} دقيقة`} />
+          <Fact label="الفئة العمرية" value={circle.ageGroup} />
           <Fact label="التركيز" value={circle.focus} />
           <Fact label="المقاعد" value={`${seatsLeft} من ${circle.capacity}`} />
           {circle.teacherName ? <Fact label="المعلّم" value={circle.teacherName} /> : null}

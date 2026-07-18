@@ -1,4 +1,4 @@
-import type { Circle } from '@/types/circle';
+import type { AgeGroup, Circle, TimeSlot } from '@/types/circle';
 
 /** Upcoming men's circles across Riyadh — relative to "now" for a living demo. */
 function atHourOffset(daysFromNow: number, hour: number, minute = 0): string {
@@ -20,6 +20,20 @@ export const DISTRICTS = [
   'الشفا',
 ] as const;
 
+export const AGE_GROUPS: AgeGroup[] = ['أطفال', 'يافعين', 'شباب', 'كبار'];
+
+export const TIME_SLOTS: TimeSlot[] = ['صباح', 'ظهر', 'عصر', 'مغرب', 'عشاء'];
+
+/** Map wall-clock hour to a filterable time slot. */
+export function getTimeSlot(iso: string): TimeSlot {
+  const hour = new Date(iso).getHours();
+  if (hour < 12) return 'صباح';
+  if (hour < 15) return 'ظهر';
+  if (hour < 18) return 'عصر';
+  if (hour < 20) return 'مغرب';
+  return 'عشاء';
+}
+
 /** حلقات رجال فقط */
 export const CIRCLES: Circle[] = [
   {
@@ -30,6 +44,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(0, 16, 30),
     durationMin: 60,
     focus: 'جزء عمّ — مراجعة وتثبيت',
+    ageGroup: 'كبار',
     capacity: 25,
     joinedCount: 14,
     address: 'طريق الملك فهد، حي العليا، الرياض',
@@ -46,6 +61,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(0, 19, 45),
     durationMin: 75,
     focus: 'حفظ البقرة — الأوجه الأولى',
+    ageGroup: 'شباب',
     capacity: 30,
     joinedCount: 22,
     address: 'حي الملز، قرب جامعة الإمام سعود',
@@ -62,6 +78,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(1, 17, 0),
     durationMin: 50,
     focus: 'تلاوة مجوّدة مع تدبّر قصير',
+    ageGroup: 'كبار',
     capacity: 40,
     joinedCount: 18,
     address: 'حي السليمانية، الرياض',
@@ -77,6 +94,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(1, 16, 0),
     durationMin: 45,
     focus: 'جزء تبارك — تحفيظ للفتيان',
+    ageGroup: 'أطفال',
     capacity: 20,
     joinedCount: 11,
     address: 'حي الياسمين، شمال الرياض',
@@ -93,6 +111,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(2, 20, 15),
     durationMin: 60,
     focus: 'مراجعة الحزب المفصّل',
+    ageGroup: 'شباب',
     capacity: 18,
     joinedCount: 9,
     address: 'حي النسيم الشرقي، الرياض',
@@ -108,6 +127,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(2, 18, 30),
     durationMin: 90,
     focus: 'تجويد متقدّم وإجازة',
+    ageGroup: 'كبار',
     capacity: 15,
     joinedCount: 12,
     address: 'حي قرطبة، شرق الرياض',
@@ -124,6 +144,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(3, 15, 45),
     durationMin: 55,
     focus: 'حفظ سورة الكهف',
+    ageGroup: 'يافعين',
     capacity: 22,
     joinedCount: 7,
     address: 'حي الروضة، الرياض',
@@ -139,6 +160,7 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(3, 21, 0),
     durationMin: 40,
     focus: 'تصحيح تلاوة يومي',
+    ageGroup: 'كبار',
     capacity: 28,
     joinedCount: 16,
     address: 'حي الشفا، جنوب الرياض',
@@ -146,6 +168,39 @@ export const CIRCLES: Circle[] = [
     lng: 46.7,
     teacherName: 'الأستاذ يوسف الغامدي',
     notes: 'جلسة خفيفة بعد العشاء. مناسب للمشغولين.',
+  },
+  {
+    id: '9',
+    title: 'حلقة الصباح للصغار',
+    mosqueName: 'جامع العليا',
+    district: 'العليا',
+    startsAt: atHourOffset(0, 9, 30),
+    durationMin: 45,
+    focus: 'قصار السور — تحفيظ',
+    ageGroup: 'أطفال',
+    capacity: 16,
+    joinedCount: 8,
+    address: 'حي العليا، الرياض',
+    lat: 24.7,
+    lng: 46.68,
+    teacherName: 'الأستاذ ناصر العتيبي',
+    notes: 'بعد صلاة الضحى. للأعمار من ٦ إلى ١٠ سنوات.',
+  },
+  {
+    id: '10',
+    title: 'حلقة اليافعين بعد الظهر',
+    mosqueName: 'مسجد الملز الكبير',
+    district: 'الملز',
+    startsAt: atHourOffset(1, 13, 15),
+    durationMin: 50,
+    focus: 'مراجعة وجزء قد سمع',
+    ageGroup: 'يافعين',
+    capacity: 20,
+    joinedCount: 10,
+    address: 'حي الملز، الرياض',
+    lat: 24.71,
+    lng: 46.73,
+    teacherName: 'الأستاذ تركي الحربي',
   },
 ];
 

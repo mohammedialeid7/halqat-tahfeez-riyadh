@@ -33,7 +33,7 @@ export function CircleListItem({ circle, index, joined }: Props) {
               {circle.title}
             </Text>
             <Text style={styles.meta} numberOfLines={1}>
-              {circle.mosqueName} · {circle.district}
+              {circle.mosqueName} · {circle.district} · {circle.ageGroup}
             </Text>
             <View style={styles.footer}>
               <Text style={styles.focus} numberOfLines={1}>

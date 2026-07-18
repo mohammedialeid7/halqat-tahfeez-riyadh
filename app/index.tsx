@@ -1,23 +1,27 @@
-import { useCallback, useState } from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 
 import { Atmosphere } from '@/components/Atmosphere';
 import { CircleListItem } from '@/components/CircleListItem';
-import { DistrictFilter } from '@/components/DistrictFilter';
+import { FilterChips } from '@/components/FilterChips';
 import { colors, fonts, spacing } from '@/constants/theme';
-import { CIRCLES } from '@/data/circles';
+import {
+  AGE_GROUPS,
+  CIRCLES,
+  DISTRICTS,
+  TIME_SLOTS,
+  getTimeSlot,
+} from '@/data/circles';
 import { getJoinedCircleIds } from '@/lib/joins';
+import type { AgeGroup, TimeSlot } from '@/types/circle';
 
 export default function HomeScreen() {
-  const [district, setDistrict] = useState('الكل');
+  const [districts, setDistricts] = useState<string[]>([]);
+  const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [joinedIds, setJoinedIds] = useState<string[]>([]);
 
   useFocusEffect(
@@ -32,9 +36,25 @@ export default function HomeScreen() {
     }, []),
   );
 
-  const data = CIRCLES.filter((c) => district === 'الكل' || c.district === district).sort(
-    (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+  const districtOptions = useMemo(
+    () => DISTRICTS.filter((d) => d !== 'الكل'),
+    [],
   );
+
+  const data = useMemo(() => {
+    return CIRCLES.filter((circle) => {
+      if (districts.length > 0 && !districts.includes(circle.district)) {
+        return false;
+      }
+      if (ageGroups.length > 0 && !ageGroups.includes(circle.ageGroup)) {
+        return false;
+      }
+      if (timeSlots.length > 0 && !timeSlots.includes(getTimeSlot(circle.startsAt))) {
+        return false;
+      }
+      return true;
+    }).sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+  }, [ageGroups, districts, timeSlots]);
 
   return (
     <Atmosphere>
@@ -47,7 +67,29 @@ export default function HomeScreen() {
           </Text>
         </Animated.View>
 
-        <DistrictFilter value={district} onChange={setDistrict} />
+        <View style={styles.filters}>
+          <FilterChips
+            label="الحي"
+            options={districtOptions}
+            selected={districts}
+            onChange={setDistricts}
+            multi
+          />
+          <FilterChips
+            label="الفئة العمرية"
+            options={AGE_GROUPS}
+            selected={ageGroups}
+            onChange={(next) => setAgeGroups(next as AgeGroup[])}
+            multi
+          />
+          <FilterChips
+            label="الوقت"
+            options={TIME_SLOTS}
+            selected={timeSlots}
+            onChange={(next) => setTimeSlots(next as TimeSlot[])}
+            multi
+          />
+        </View>
 
         <FlatList
           data={data}
@@ -56,8 +98,8 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.empty}>
-              <Text style={styles.emptyTitle}>لا حلقات في هذا الحي حالياً</Text>
-              <Text style={styles.emptyBody}>جرّب حيّاً آخر أو عد لاحقاً.</Text>
+              <Text style={styles.emptyTitle}>لا حلقات مطابقة للفلاتر</Text>
+              <Text style={styles.emptyBody}>جرّب إلغاء بعض الاختيارات أو غيّر الحي.</Text>
             </View>
           }
           renderItem={({ item, index }) => (
@@ -80,7 +122,7 @@ const styles = StyleSheet.create({
   hero: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
-    paddingBottom: spacing.lg,
+    paddingBottom: spacing.md,
     alignItems: 'flex-end',
   },
   brand: {
@@ -108,6 +150,9 @@ const styles = StyleSheet.create({
     writingDirection: 'rtl',
     textAlign: 'right',
     maxWidth: 340,
+  },
+  filters: {
+    paddingBottom: spacing.xs,
   },
   list: {
     paddingHorizontal: spacing.lg,
