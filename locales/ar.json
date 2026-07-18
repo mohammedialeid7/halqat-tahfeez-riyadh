@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "حلقات تحفيظ الرياض",
+    "NSUserTrackingUsageDescription": ""
+  },
+  "android": {
+    "app_name": "حلقات تحفيظ الرياض"
+  }
+}

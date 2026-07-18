@@ -1,0 +1,186 @@
+import type { Circle } from '@/types/circle';
+
+/** Upcoming circles across Riyadh — relative to "now" for a living demo. */
+function atHourOffset(daysFromNow: number, hour: number, minute = 0): string {
+  const d = new Date();
+  d.setDate(d.getDate() + daysFromNow);
+  d.setHours(hour, minute, 0, 0);
+  return d.toISOString();
+}
+
+export const DISTRICTS = [
+  'الكل',
+  'العليا',
+  'الملز',
+  'النسيم',
+  'الياسمين',
+  'قرطبة',
+  'السليمانية',
+  'الروضة',
+  'الشفا',
+] as const;
+
+export const CIRCLES: Circle[] = [
+  {
+    id: '1',
+    title: 'حلقة تحفيظ جزء عمّ',
+    mosqueName: 'جامع الراجحي',
+    district: 'العليا',
+    startsAt: atHourOffset(0, 16, 30),
+    durationMin: 60,
+    focus: 'جزء عمّ — مراجعة وتثبيت',
+    genderPolicy: 'رجال',
+    capacity: 25,
+    joinedCount: 14,
+    address: 'طريق الملك فهد، حي العليا، الرياض',
+    lat: 24.6956,
+    lng: 46.6857,
+    teacherName: 'الأستاذ خالد العتيبي',
+    notes: 'يُفضّل إحضار المصحف. الحلقة بعد صلاة العصر مباشرة.',
+  },
+  {
+    id: '2',
+    title: 'حلقة حفظ سورة البقرة',
+    mosqueName: 'مسجد جامعة الإمام سعود',
+    district: 'الملز',
+    startsAt: atHourOffset(0, 19, 45),
+    durationMin: 75,
+    focus: 'حفظ البقرة — الأوجه الأولى',
+    genderPolicy: 'نساء',
+    capacity: 30,
+    joinedCount: 22,
+    address: 'حي الملز، قرب جامعة الإمام سعود',
+    lat: 24.7136,
+    lng: 46.735,
+    teacherName: 'الأستاذة نورة الشمري',
+    notes: 'للمبتدئات والمتوسطات. يوجد ركن للأطفال في الخلف.',
+  },
+  {
+    id: '3',
+    title: 'مجلس تدبّر وتلاوة',
+    mosqueName: 'جامع الملك خالد',
+    district: 'السليمانية',
+    startsAt: atHourOffset(1, 17, 0),
+    durationMin: 50,
+    focus: 'تلاوة مجوّدة مع تدبّر قصير',
+    genderPolicy: 'مختلط',
+    capacity: 40,
+    joinedCount: 18,
+    address: 'حي السليمانية، الرياض',
+    lat: 24.69,
+    lng: 46.72,
+    teacherName: 'الشيخ عبدالرحمن القحطاني',
+  },
+  {
+    id: '4',
+    title: 'حلقة الصغار — جزء تبارك',
+    mosqueName: 'مسجد الياسمين',
+    district: 'الياسمين',
+    startsAt: atHourOffset(1, 16, 0),
+    durationMin: 45,
+    focus: 'جزء تبارك — تحفيظ للصغار',
+    genderPolicy: 'مختلط',
+    capacity: 20,
+    joinedCount: 11,
+    address: 'حي الياسمين، شمال الرياض',
+    lat: 24.82,
+    lng: 46.64,
+    teacherName: 'الأستاذ فهد الدوسري',
+    notes: 'للأعمار من ٧ إلى ١٢ سنة. يُفضّل حضور ولي الأمر في الجلسة الأولى.',
+  },
+  {
+    id: '5',
+    title: 'مراجعة الحزب المفصّل',
+    mosqueName: 'جامع النسيم',
+    district: 'النسيم',
+    startsAt: atHourOffset(2, 20, 15),
+    durationMin: 60,
+    focus: 'مراجعة الحزب المفصّل',
+    genderPolicy: 'رجال',
+    capacity: 18,
+    joinedCount: 9,
+    address: 'حي النسيم الشرقي، الرياض',
+    lat: 24.74,
+    lng: 46.82,
+    teacherName: 'الأستاذ سعد الحربي',
+  },
+  {
+    id: '6',
+    title: 'حلقة الإجازة والتجويد',
+    mosqueName: 'مسجد قرطبة الكبير',
+    district: 'قرطبة',
+    startsAt: atHourOffset(2, 18, 30),
+    durationMin: 90,
+    focus: 'تجويد متقدّم وإجازة',
+    genderPolicy: 'نساء',
+    capacity: 15,
+    joinedCount: 12,
+    address: 'حي قرطبة، شرق الرياض',
+    lat: 24.81,
+    lng: 46.74,
+    teacherName: 'الشيخة هدى الزهراني',
+    notes: 'يشترط إتقان الأحكام الأساسية. مقاعد محدودة.',
+  },
+  {
+    id: '7',
+    title: 'تحفيظ سورة الكهف',
+    mosqueName: 'جامع الروضة',
+    district: 'الروضة',
+    startsAt: atHourOffset(3, 15, 45),
+    durationMin: 55,
+    focus: 'حفظ سورة الكهف',
+    genderPolicy: 'رجال',
+    capacity: 22,
+    joinedCount: 7,
+    address: 'حي الروضة، الرياض',
+    lat: 24.78,
+    lng: 46.78,
+    teacherName: 'الأستاذ محمد السبيعي',
+  },
+  {
+    id: '8',
+    title: 'حلقة المساء — تصحيح التلاوة',
+    mosqueName: 'مسجد الشفا',
+    district: 'الشفا',
+    startsAt: atHourOffset(3, 21, 0),
+    durationMin: 40,
+    focus: 'تصحيح تلاوة يومي',
+    genderPolicy: 'مختلط',
+    capacity: 28,
+    joinedCount: 16,
+    address: 'حي الشفا، جنوب الرياض',
+    lat: 24.56,
+    lng: 46.7,
+    teacherName: 'الأستاذ يوسف الغامدي',
+    notes: 'جلسة خفيفة بعد العشاء. مناسب للمشغولين.',
+  },
+];
+
+export function getCircleById(id: string): Circle | undefined {
+  return CIRCLES.find((c) => c.id === id);
+}
+
+export function formatCircleWhen(iso: string): { dayLabel: string; timeLabel: string } {
+  const date = new Date(iso);
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfTarget = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.round(
+    (startOfTarget.getTime() - startOfToday.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  let dayLabel = date.toLocaleDateString('ar-SA', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+  if (diffDays === 0) dayLabel = 'اليوم';
+  else if (diffDays === 1) dayLabel = 'غداً';
+
+  const timeLabel = date.toLocaleTimeString('ar-SA', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
+  return { dayLabel, timeLabel };
+}
