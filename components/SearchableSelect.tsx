@@ -1,7 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  Dimensions,
   FlatList,
+  Keyboard,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -22,6 +25,53 @@ type Props = {
   searchPlaceholder?: string;
 };
 
+function useKeyboardOverlap(active: boolean) {
+  const [overlap, setOverlap] = useState(0);
+
+  useEffect(() => {
+    if (!active) {
+      setOverlap(0);
+      return;
+    }
+
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const onShow = (event: { endCoordinates?: { height?: number } }) => {
+      setOverlap(event.endCoordinates?.height ?? 0);
+    };
+    const onHide = () => setOverlap(0);
+
+    const showSub = Keyboard.addListener(showEvent, onShow);
+    const hideSub = Keyboard.addListener(hideEvent, onHide);
+
+    let viewportCleanup: (() => void) | undefined;
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      const syncViewport = () => {
+        const vv = window.visualViewport;
+        if (!vv) return;
+        const next = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+        setOverlap(next);
+      };
+      syncViewport();
+      window.visualViewport?.addEventListener('resize', syncViewport);
+      window.visualViewport?.addEventListener('scroll', syncViewport);
+      viewportCleanup = () => {
+        window.visualViewport?.removeEventListener('resize', syncViewport);
+        window.visualViewport?.removeEventListener('scroll', syncViewport);
+      };
+    }
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+      viewportCleanup?.();
+    };
+  }, [active]);
+
+  return overlap;
+}
+
 export function SearchableSelect({
   label,
   options,
@@ -34,6 +84,8 @@ export function SearchableSelect({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const insets = useSafeAreaInsets();
+  const keyboardOverlap = useKeyboardOverlap(open);
+  const windowHeight = Dimensions.get('window').height;
 
   const filtered = useMemo(() => {
     const q = query.trim();
@@ -47,9 +99,15 @@ export function SearchableSelect({
     return `${selected.length} أحياء محددة`;
   }, [placeholder, selected]);
 
+  const sheetMaxHeight = Math.max(
+    280,
+    windowHeight - keyboardOverlap - Math.max(insets.top, 12) - 24,
+  );
+
   const toggle = (option: string) => {
     if (!multi) {
       onChange([option]);
+      Keyboard.dismiss();
       setOpen(false);
       setQuery('');
       return;
@@ -67,6 +125,7 @@ export function SearchableSelect({
   };
 
   const close = () => {
+    Keyboard.dismiss();
     setOpen(false);
     setQuery('');
   };
@@ -102,10 +161,23 @@ export function SearchableSelect({
         </View>
       ) : null}
 
-      <Modal visible={open} animationType="slide" transparent onRequestClose={close}>
+      <Modal
+        visible={open}
+        animationType="fade"
+        transparent
+        onRequestClose={close}
+        statusBarTranslucent>
         <View style={styles.backdrop}>
           <Pressable style={styles.backdropHit} onPress={close} />
-          <View style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
+          <View
+            style={[
+              styles.sheet,
+              {
+                maxHeight: sheetMaxHeight,
+                marginBottom: keyboardOverlap,
+                paddingBottom: Math.max(insets.bottom, spacing.md),
+              },
+            ]}>
             <View style={styles.sheetHeader}>
               <Pressable onPress={close} hitSlop={12}>
                 <Text style={styles.done}>تم</Text>
@@ -114,10 +186,7 @@ export function SearchableSelect({
               {multi ? (
                 <Pressable onPress={clearAll} hitSlop={12} disabled={selected.length === 0}>
                   <Text
-                    style={[
-                      styles.clear,
-                      selected.length === 0 && styles.clearDisabled,
-                    ]}>
+                    style={[styles.clear, selected.length === 0 && styles.clearDisabled]}>
                     مسح
                   </Text>
                 </Pressable>
@@ -135,6 +204,7 @@ export function SearchableSelect({
                 textAlign="right"
                 autoCorrect={false}
                 autoFocus
+                blurOnSubmit={false}
                 style={styles.search}
               />
             </View>
@@ -143,6 +213,8 @@ export function SearchableSelect({
               data={filtered}
               keyExtractor={(item) => item}
               keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
+              style={styles.results}
               contentContainerStyle={styles.list}
               ListEmptyComponent={
                 <Text style={styles.empty}>لا نتائج مطابقة لـ «{query.trim()}»</Text>
@@ -245,11 +317,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheet: {
-    maxHeight: '78%',
     backgroundColor: colors.sandSoft,
     borderTopLeftRadius: radii.lg,
     borderTopRightRadius: radii.lg,
     paddingTop: spacing.md,
+    overflow: 'hidden',
   },
   sheetHeader: {
     flexDirection: 'row-reverse',
@@ -302,9 +374,14 @@ const styles = StyleSheet.create({
     color: colors.text,
     writingDirection: 'rtl',
   },
+  results: {
+    flexGrow: 0,
+    flexShrink: 1,
+  },
   list: {
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.lg,
+    flexGrow: 1,
   },
   option: {
     minHeight: 48,

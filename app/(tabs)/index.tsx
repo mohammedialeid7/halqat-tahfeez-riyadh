@@ -57,45 +57,51 @@ export default function HomeScreen() {
   return (
     <Atmosphere>
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <Animated.View entering={FadeIn.duration(500)} style={styles.hero}>
-          <Text style={styles.brand}>حلقات تحفيظ الرياض</Text>
-          <Text style={styles.headline}>حلقات رجال قريبة منك</Text>
-          <Text style={styles.sub}>
-            تصفّح حلقات تحفيظ الرجال في الرياض وانضم بلا تسجيل.
-          </Text>
-        </Animated.View>
-
-        <View style={styles.filters}>
-          <SearchableSelect
-            label="الحي"
-            options={districtOptions}
-            selected={districts}
-            onChange={setDistricts}
-            multi
-            placeholder="كل الأحياء"
-            searchPlaceholder="ابحث عن حي…"
-          />
-          <FilterChips
-            label="الفئة العمرية"
-            options={AGE_GROUPS}
-            selected={ageGroups}
-            onChange={(next) => setAgeGroups(next as AgeGroup[])}
-            multi
-          />
-          <FilterChips
-            label="الوقت"
-            options={TIME_SLOTS}
-            selected={timeSlots}
-            onChange={(next) => setTimeSlots(next as TimeSlot[])}
-            multi
-          />
-        </View>
-
         <FlatList
+          style={styles.listRoot}
           data={data}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            <Animated.View entering={FadeIn.duration(500)}>
+              <View style={styles.hero}>
+                <Text style={styles.brand}>حلقات تحفيظ الرياض</Text>
+                <Text style={styles.headline}>حلقات رجال قريبة منك</Text>
+                <Text style={styles.sub}>
+                  تصفّح حلقات تحفيظ الرجال في الرياض وانضم بلا تسجيل.
+                </Text>
+              </View>
+
+              <View style={styles.filters}>
+                <SearchableSelect
+                  label="الحي"
+                  options={districtOptions}
+                  selected={districts}
+                  onChange={setDistricts}
+                  multi
+                  placeholder="كل الأحياء"
+                  searchPlaceholder="ابحث عن حي…"
+                />
+                <FilterChips
+                  label="الفئة العمرية"
+                  options={AGE_GROUPS}
+                  selected={ageGroups}
+                  onChange={(next) => setAgeGroups(next as AgeGroup[])}
+                  multi
+                />
+                <FilterChips
+                  label="الوقت"
+                  options={TIME_SLOTS}
+                  selected={timeSlots}
+                  onChange={(next) => setTimeSlots(next as TimeSlot[])}
+                  multi
+                />
+              </View>
+            </Animated.View>
+          }
           ListEmptyComponent={
             <View style={styles.empty}>
               <Text style={styles.emptyTitle}>لا حلقات مطابقة للفلاتر</Text>
@@ -103,11 +109,13 @@ export default function HomeScreen() {
             </View>
           }
           renderItem={({ item, index }) => (
-            <CircleListItem
-              circle={item}
-              index={index}
-              joined={joinedIds.includes(item.id)}
-            />
+            <View style={styles.itemWrap}>
+              <CircleListItem
+                circle={item}
+                index={index}
+                joined={joinedIds.includes(item.id)}
+              />
+            </View>
           )}
         />
       </SafeAreaView>
@@ -117,6 +125,9 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safe: {
+    flex: 1,
+  },
+  listRoot: {
     flex: 1,
   },
   hero: {
@@ -155,12 +166,15 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xs,
   },
   list: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
     paddingBottom: spacing.xxl,
+    flexGrow: 1,
+  },
+  itemWrap: {
+    paddingHorizontal: spacing.lg,
   },
   empty: {
-    paddingTop: spacing.xxl,
+    paddingTop: spacing.xl,
+    paddingHorizontal: spacing.lg,
     alignItems: 'center',
     gap: spacing.xs,
   },
