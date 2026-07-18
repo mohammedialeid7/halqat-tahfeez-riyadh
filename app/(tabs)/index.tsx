@@ -7,6 +7,7 @@ import { useFocusEffect } from 'expo-router';
 import { Atmosphere } from '@/components/Atmosphere';
 import { CircleListItem } from '@/components/CircleListItem';
 import { FilterChips } from '@/components/FilterChips';
+import { SearchableSelect } from '@/components/SearchableSelect';
 import { colors, fonts, spacing } from '@/constants/theme';
 import { AGE_GROUPS, DISTRICTS, TIME_SLOTS, getTimeSlot } from '@/data/circles';
 import { getAllCircles } from '@/lib/circlesStore';
@@ -65,12 +66,14 @@ export default function HomeScreen() {
         </Animated.View>
 
         <View style={styles.filters}>
-          <FilterChips
+          <SearchableSelect
             label="الحي"
             options={districtOptions}
             selected={districts}
             onChange={setDistricts}
             multi
+            placeholder="كل الأحياء"
+            searchPlaceholder="ابحث عن حي…"
           />
           <FilterChips
             label="الفئة العمرية"

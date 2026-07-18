@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Atmosphere } from '@/components/Atmosphere';
 import { FilterChips } from '@/components/FilterChips';
 import { PrimaryButton } from '@/components/PrimaryButton';
+import { SearchableSelect } from '@/components/SearchableSelect';
 import { colors, fonts, radii, spacing } from '@/constants/theme';
 import { AGE_GROUPS, DISTRICTS, TIME_SLOTS } from '@/data/circles';
 import { addCircle } from '@/lib/circlesStore';
@@ -166,12 +167,14 @@ export default function AddCircleScreen() {
               />
             </View>
 
-            <FilterChips
+            <SearchableSelect
               label="الحي"
               options={districtOptions}
               selected={district}
               onChange={(next) => setDistrict(next.slice(-1))}
               multi={false}
+              placeholder="اختر الحي"
+              searchPlaceholder="ابحث عن حي…"
             />
             <FilterChips
               label="الفئة العمرية"
