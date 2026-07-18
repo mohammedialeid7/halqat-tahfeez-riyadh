@@ -1,6 +1,6 @@
 import type { Circle } from '@/types/circle';
 
-/** Upcoming circles across Riyadh — relative to "now" for a living demo. */
+/** Upcoming men's circles across Riyadh — relative to "now" for a living demo. */
 function atHourOffset(daysFromNow: number, hour: number, minute = 0): string {
   const d = new Date();
   d.setDate(d.getDate() + daysFromNow);
@@ -20,6 +20,7 @@ export const DISTRICTS = [
   'الشفا',
 ] as const;
 
+/** حلقات رجال فقط */
 export const CIRCLES: Circle[] = [
   {
     id: '1',
@@ -29,7 +30,6 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(0, 16, 30),
     durationMin: 60,
     focus: 'جزء عمّ — مراجعة وتثبيت',
-    genderPolicy: 'رجال',
     capacity: 25,
     joinedCount: 14,
     address: 'طريق الملك فهد، حي العليا، الرياض',
@@ -46,14 +46,13 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(0, 19, 45),
     durationMin: 75,
     focus: 'حفظ البقرة — الأوجه الأولى',
-    genderPolicy: 'نساء',
     capacity: 30,
     joinedCount: 22,
     address: 'حي الملز، قرب جامعة الإمام سعود',
     lat: 24.7136,
     lng: 46.735,
-    teacherName: 'الأستاذة نورة الشمري',
-    notes: 'للمبتدئات والمتوسطات. يوجد ركن للأطفال في الخلف.',
+    teacherName: 'الأستاذ عبدالعزيز الشمري',
+    notes: 'للمبتدئين والمتوسطين.',
   },
   {
     id: '3',
@@ -63,7 +62,6 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(1, 17, 0),
     durationMin: 50,
     focus: 'تلاوة مجوّدة مع تدبّر قصير',
-    genderPolicy: 'مختلط',
     capacity: 40,
     joinedCount: 18,
     address: 'حي السليمانية، الرياض',
@@ -73,13 +71,12 @@ export const CIRCLES: Circle[] = [
   },
   {
     id: '4',
-    title: 'حلقة الصغار — جزء تبارك',
+    title: 'حلقة الفتيان — جزء تبارك',
     mosqueName: 'مسجد الياسمين',
     district: 'الياسمين',
     startsAt: atHourOffset(1, 16, 0),
     durationMin: 45,
-    focus: 'جزء تبارك — تحفيظ للصغار',
-    genderPolicy: 'مختلط',
+    focus: 'جزء تبارك — تحفيظ للفتيان',
     capacity: 20,
     joinedCount: 11,
     address: 'حي الياسمين، شمال الرياض',
@@ -96,7 +93,6 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(2, 20, 15),
     durationMin: 60,
     focus: 'مراجعة الحزب المفصّل',
-    genderPolicy: 'رجال',
     capacity: 18,
     joinedCount: 9,
     address: 'حي النسيم الشرقي، الرياض',
@@ -112,13 +108,12 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(2, 18, 30),
     durationMin: 90,
     focus: 'تجويد متقدّم وإجازة',
-    genderPolicy: 'نساء',
     capacity: 15,
     joinedCount: 12,
     address: 'حي قرطبة، شرق الرياض',
     lat: 24.81,
     lng: 46.74,
-    teacherName: 'الشيخة هدى الزهراني',
+    teacherName: 'الشيخ إبراهيم الزهراني',
     notes: 'يشترط إتقان الأحكام الأساسية. مقاعد محدودة.',
   },
   {
@@ -129,7 +124,6 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(3, 15, 45),
     durationMin: 55,
     focus: 'حفظ سورة الكهف',
-    genderPolicy: 'رجال',
     capacity: 22,
     joinedCount: 7,
     address: 'حي الروضة، الرياض',
@@ -145,7 +139,6 @@ export const CIRCLES: Circle[] = [
     startsAt: atHourOffset(3, 21, 0),
     durationMin: 40,
     focus: 'تصحيح تلاوة يومي',
-    genderPolicy: 'مختلط',
     capacity: 28,
     joinedCount: 16,
     address: 'حي الشفا، جنوب الرياض',

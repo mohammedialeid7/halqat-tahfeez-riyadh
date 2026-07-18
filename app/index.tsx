@@ -41,9 +41,9 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
         <Animated.View entering={FadeIn.duration(500)} style={styles.hero}>
           <Text style={styles.brand}>حلقات تحفيظ الرياض</Text>
-          <Text style={styles.headline}>حلقات قريبة منك</Text>
+          <Text style={styles.headline}>حلقات رجال قريبة منك</Text>
           <Text style={styles.sub}>
-            تصفّح حلقات التحفيظ والتلاوة في الرياض وانضم بلا تسجيل.
+            تصفّح حلقات تحفيظ الرجال في الرياض وانضم بلا تسجيل.
           </Text>
         </Animated.View>
 

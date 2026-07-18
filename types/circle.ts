@@ -1,5 +1,3 @@
-export type GenderPolicy = 'رجال' | 'نساء' | 'مختلط';
-
 export type DistrictFilter = 'الكل' | string;
 
 export type Circle = {
@@ -10,7 +8,6 @@ export type Circle = {
   startsAt: string; // ISO
   durationMin: number;
   focus: string;
-  genderPolicy: GenderPolicy;
   capacity: number;
   joinedCount: number;
   address: string;
