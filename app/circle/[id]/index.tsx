@@ -13,27 +13,41 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { Atmosphere } from '@/components/Atmosphere';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { colors, fonts, radii, spacing } from '@/constants/theme';
-import { formatCircleWhen, getCircleById } from '@/data/circles';
+import { formatCircleWhen } from '@/data/circles';
+import { findCircleById } from '@/lib/circlesStore';
 import { getJoinRecord } from '@/lib/joins';
+import type { Circle } from '@/types/circle';
 
 export default function CircleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const circle = getCircleById(String(id));
+  const [circle, setCircle] = useState<Circle | null | undefined>(undefined);
   const [joinedName, setJoinedName] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      if (!circle) return;
       let active = true;
-      getJoinRecord(circle.id).then((record) => {
-        if (active) setJoinedName(record?.name ?? null);
+      findCircleById(String(id)).then((found) => {
+        if (!active) return;
+        setCircle(found ?? null);
+        if (!found) return;
+        getJoinRecord(found.id).then((record) => {
+          if (active) setJoinedName(record?.name ?? null);
+        });
       });
       return () => {
         active = false;
       };
-    }, [circle]),
+    }, [id]),
   );
+
+  if (circle === undefined) {
+    return (
+      <Atmosphere>
+        <View />
+      </Atmosphere>
+    );
+  }
 
   if (!circle) {
     return (

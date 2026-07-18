@@ -8,27 +8,25 @@ import { Atmosphere } from '@/components/Atmosphere';
 import { CircleListItem } from '@/components/CircleListItem';
 import { FilterChips } from '@/components/FilterChips';
 import { colors, fonts, spacing } from '@/constants/theme';
-import {
-  AGE_GROUPS,
-  CIRCLES,
-  DISTRICTS,
-  TIME_SLOTS,
-  getTimeSlot,
-} from '@/data/circles';
+import { AGE_GROUPS, DISTRICTS, TIME_SLOTS, getTimeSlot } from '@/data/circles';
+import { getAllCircles } from '@/lib/circlesStore';
 import { getJoinedCircleIds } from '@/lib/joins';
-import type { AgeGroup, TimeSlot } from '@/types/circle';
+import type { AgeGroup, Circle, TimeSlot } from '@/types/circle';
 
 export default function HomeScreen() {
   const [districts, setDistricts] = useState<string[]>([]);
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([]);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [joinedIds, setJoinedIds] = useState<string[]>([]);
+  const [circles, setCircles] = useState<Circle[]>([]);
 
   useFocusEffect(
     useCallback(() => {
       let active = true;
-      getJoinedCircleIds().then((ids) => {
-        if (active) setJoinedIds(ids);
+      Promise.all([getAllCircles(), getJoinedCircleIds()]).then(([all, ids]) => {
+        if (!active) return;
+        setCircles(all);
+        setJoinedIds(ids);
       });
       return () => {
         active = false;
@@ -36,25 +34,24 @@ export default function HomeScreen() {
     }, []),
   );
 
-  const districtOptions = useMemo(
-    () => DISTRICTS.filter((d) => d !== 'الكل'),
-    [],
-  );
+  const districtOptions = useMemo(() => DISTRICTS.filter((d) => d !== 'الكل'), []);
 
   const data = useMemo(() => {
-    return CIRCLES.filter((circle) => {
-      if (districts.length > 0 && !districts.includes(circle.district)) {
-        return false;
-      }
-      if (ageGroups.length > 0 && !ageGroups.includes(circle.ageGroup)) {
-        return false;
-      }
-      if (timeSlots.length > 0 && !timeSlots.includes(getTimeSlot(circle.startsAt))) {
-        return false;
-      }
-      return true;
-    }).sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
-  }, [ageGroups, districts, timeSlots]);
+    return circles
+      .filter((circle) => {
+        if (districts.length > 0 && !districts.includes(circle.district)) {
+          return false;
+        }
+        if (ageGroups.length > 0 && !ageGroups.includes(circle.ageGroup)) {
+          return false;
+        }
+        if (timeSlots.length > 0 && !timeSlots.includes(getTimeSlot(circle.startsAt))) {
+          return false;
+        }
+        return true;
+      })
+      .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+  }, [ageGroups, circles, districts, timeSlots]);
 
   return (
     <Atmosphere>
@@ -99,7 +96,7 @@ export default function HomeScreen() {
           ListEmptyComponent={
             <View style={styles.empty}>
               <Text style={styles.emptyTitle}>لا حلقات مطابقة للفلاتر</Text>
-              <Text style={styles.emptyBody}>جرّب إلغاء بعض الاختيارات أو غيّر الحي.</Text>
+              <Text style={styles.emptyBody}>جرّب إلغاء بعض الاختيارات أو أضف حلقة جديدة.</Text>
             </View>
           }
           renderItem={({ item, index }) => (

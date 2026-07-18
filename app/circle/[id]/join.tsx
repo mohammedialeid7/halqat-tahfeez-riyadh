@@ -20,13 +20,14 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Atmosphere } from '@/components/Atmosphere';
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { colors, fonts, radii, spacing } from '@/constants/theme';
-import { getCircleById } from '@/data/circles';
+import { findCircleById } from '@/lib/circlesStore';
 import { getJoinRecord, saveJoin } from '@/lib/joins';
+import type { Circle } from '@/types/circle';
 
 export default function JoinCircleScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const circle = getCircleById(String(id));
+  const [circle, setCircle] = useState<Circle | null | undefined>(undefined);
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -37,18 +38,33 @@ export default function JoinCircleScreen() {
   const checkScale = useSharedValue(0.6);
 
   useEffect(() => {
-    if (!circle) return;
-    getJoinRecord(circle.id).then((record) => {
-      if (record) {
+    let active = true;
+    findCircleById(String(id)).then((found) => {
+      if (!active) return;
+      setCircle(found ?? null);
+      if (!found) return;
+      getJoinRecord(found.id).then((record) => {
+        if (!active || !record) return;
         setName(record.name);
         setPhone(record.phone ?? '');
-      }
+      });
     });
-  }, [circle]);
+    return () => {
+      active = false;
+    };
+  }, [id]);
 
   const checkStyle = useAnimatedStyle(() => ({
     transform: [{ scale: checkScale.value }],
   }));
+
+  if (circle === undefined) {
+    return (
+      <Atmosphere>
+        <View />
+      </Atmosphere>
+    );
+  }
 
   if (!circle) {
     return (

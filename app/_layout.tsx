@@ -62,7 +62,7 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.sand },
           animation: 'slide_from_left',
         }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="circle/[id]/index"
           options={{ title: 'تفاصيل الحلقة' }}
