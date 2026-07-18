@@ -123,49 +123,53 @@ export function SearchableSelect({
             )}
           </View>
 
-          <View style={styles.searchWrap}>
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder={searchPlaceholder}
-              placeholderTextColor={colors.textMuted}
-              textAlign="right"
-              autoCorrect={false}
-              autoFocus
-              blurOnSubmit={false}
-              returnKeyType="search"
-              style={styles.search}
-            />
-          </View>
+          <View style={styles.body}>
+            <View style={styles.searchWrap}>
+              <TextInput
+                value={query}
+                onChangeText={setQuery}
+                placeholder={searchPlaceholder}
+                placeholderTextColor={colors.textMuted}
+                textAlign="right"
+                autoCorrect={false}
+                autoFocus
+                blurOnSubmit={false}
+                returnKeyType="search"
+                style={styles.search}
+              />
+            </View>
 
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => item}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            style={styles.results}
-            contentContainerStyle={styles.list}
-            ListEmptyComponent={
-              <Text style={styles.empty}>لا نتائج مطابقة لـ «{query.trim()}»</Text>
-            }
-            renderItem={({ item }) => {
-              const active = selected.includes(item);
-              return (
-                <Pressable
-                  onPress={() => toggle(item)}
-                  style={[styles.option, active && styles.optionActive]}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}>
-                  <Text style={[styles.check, !active && styles.checkHidden]}>
-                    {multi ? '✓' : '●'}
-                  </Text>
-                  <Text style={[styles.optionText, active && styles.optionTextActive]}>
-                    {item}
-                  </Text>
-                </Pressable>
-              );
-            }}
-          />
+            <View style={styles.listPanel}>
+              <FlatList
+                data={filtered}
+                keyExtractor={(item) => item}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                style={styles.results}
+                contentContainerStyle={styles.listContent}
+                ListEmptyComponent={
+                  <Text style={styles.empty}>لا نتائج مطابقة لـ «{query.trim()}»</Text>
+                }
+                renderItem={({ item }) => {
+                  const active = selected.includes(item);
+                  return (
+                    <Pressable
+                      onPress={() => toggle(item)}
+                      style={[styles.option, active && styles.optionActive]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: active }}>
+                      <Text style={[styles.check, !active && styles.checkHidden]}>
+                        {multi ? '✓' : '●'}
+                      </Text>
+                      <Text style={[styles.optionText, active && styles.optionTextActive]}>
+                        {item}
+                      </Text>
+                    </Pressable>
+                  );
+                }}
+              />
+            </View>
+          </View>
         </SafeAreaView>
       </Modal>
     </View>
@@ -245,8 +249,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.sm,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
   },
@@ -278,9 +282,15 @@ const styles = StyleSheet.create({
   clearSpacer: {
     minWidth: 48,
   },
-  searchWrap: {
+  body: {
+    flex: 1,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg,
+    gap: spacing.md,
+  },
+  searchWrap: {
+    width: '100%',
   },
   search: {
     minHeight: 48,
@@ -294,27 +304,37 @@ const styles = StyleSheet.create({
     color: colors.text,
     writingDirection: 'rtl',
   },
+  listPanel: {
+    flex: 1,
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+    overflow: 'hidden',
+    paddingVertical: spacing.sm,
+  },
   results: {
     flex: 1,
   },
-  list: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxl,
+  listContent: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.xs,
+    paddingBottom: spacing.xl,
   },
   option: {
-    minHeight: 52,
+    minHeight: 48,
     flexDirection: 'row-reverse',
     alignItems: 'center',
     gap: spacing.sm,
     paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
   },
   optionActive: {
-    backgroundColor: 'rgba(216, 232, 223, 0.45)',
-    marginHorizontal: -spacing.sm,
-    paddingHorizontal: spacing.sm,
+    backgroundColor: colors.greenSoft,
     borderRadius: radii.sm,
+    borderBottomColor: 'transparent',
   },
   optionText: {
     flex: 1,
@@ -340,6 +360,7 @@ const styles = StyleSheet.create({
   },
   empty: {
     paddingVertical: spacing.xl,
+    paddingHorizontal: spacing.md,
     fontFamily: fonts.regular,
     fontSize: 15,
     color: colors.textMuted,
