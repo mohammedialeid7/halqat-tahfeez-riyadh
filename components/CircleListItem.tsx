@@ -36,9 +36,13 @@ export function CircleListItem({ circle, index, joined }: Props) {
               {circle.mosqueName} · {circle.district} · {circle.ageGroup}
             </Text>
             <View style={styles.footer}>
-              <Text style={styles.focus} numberOfLines={1}>
-                {circle.focus}
-              </Text>
+              {circle.focus ? (
+                <Text style={styles.focus} numberOfLines={1}>
+                  {circle.focus}
+                </Text>
+              ) : (
+                <View style={styles.focus} />
+              )}
               <Text style={styles.seats}>
                 {joined ? 'منضمّ' : `${seatsLeft} مقعد`}
               </Text>

@@ -9,7 +9,7 @@ export type Circle = {
   district: string;
   startsAt: string; // ISO
   durationMin: number;
-  focus: string;
+  focus?: string;
   ageGroup: AgeGroup;
   capacity: number;
   joinedCount: number;

@@ -73,7 +73,7 @@ export type NewCircleInput = {
   district: string;
   startsAt: string;
   durationMin: number;
-  focus: string;
+  focus?: string;
   ageGroup: Circle['ageGroup'];
   capacity: number;
   address?: string;
@@ -90,7 +90,7 @@ export async function addCircle(input: NewCircleInput): Promise<Circle> {
     district: input.district,
     startsAt: input.startsAt,
     durationMin: input.durationMin,
-    focus: input.focus.trim(),
+    focus: input.focus?.trim() || undefined,
     ageGroup: input.ageGroup,
     capacity: input.capacity,
     joinedCount: 0,
