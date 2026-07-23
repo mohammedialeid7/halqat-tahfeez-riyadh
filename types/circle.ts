@@ -13,7 +13,7 @@ export type Circle = {
   ageGroup: AgeGroup;
   capacity: number;
   joinedCount: number;
-  address: string;
+  address?: string;
   lat: number;
   lng: number;
   notes?: string;

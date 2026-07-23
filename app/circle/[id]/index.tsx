@@ -71,7 +71,9 @@ export default function CircleDetailScreen() {
       `${circle.mosqueName} — ${circle.district}`,
       `${dayLabel} · ${timeLabel}`,
       circle.address,
-    ].join('\n');
+    ]
+      .filter(Boolean)
+      .join('\n');
     await Share.share({ message });
   };
 
@@ -98,7 +100,9 @@ export default function CircleDetailScreen() {
 
         <Animated.View entering={FadeInUp.delay(200).duration(420)} style={styles.section}>
           <Text style={styles.sectionTitle}>الموقع</Text>
-          <Text style={styles.sectionBody}>{circle.address}</Text>
+          <Text style={styles.sectionBody}>
+            {circle.address?.trim() ? circle.address : `حي ${circle.district}`}
+          </Text>
           <PrimaryButton
             label="فتح الخريطة"
             variant="secondary"

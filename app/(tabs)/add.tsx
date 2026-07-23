@@ -82,10 +82,6 @@ export default function AddCircleScreen() {
       setError('اكتب محور الحلقة أو السورة');
       return;
     }
-    if (address.trim().length < 4) {
-      setError('أدخل عنواناً واضحاً');
-      return;
-    }
 
     const capacityNum = Number(capacity);
     const durationNum = Number(durationMin);
@@ -139,7 +135,6 @@ export default function AddCircleScreen() {
 
             <Field label="عنوان الحلقة" value={title} onChangeText={setTitle} placeholder="مثال: حلقة تحفيظ جزء عمّ" />
             <Field label="المسجد / الجامع" value={mosqueName} onChangeText={setMosqueName} placeholder="اسم المسجد" />
-            <Field label="العنوان" value={address} onChangeText={setAddress} placeholder="الحي والشارع" />
             <Field label="محور الحلقة" value={focus} onChangeText={setFocus} placeholder="السورة أو الجزء" />
             <Field
               label="اسم المعلّم (اختياري)"
@@ -196,6 +191,13 @@ export default function AddCircleScreen() {
               selected={timeSlot}
               onChange={(next) => setTimeSlot((next as TimeSlot[]).slice(-1))}
               multi={false}
+            />
+
+            <Field
+              label="عنوان الحلقة التفصيلي (اختياري)"
+              value={address}
+              onChangeText={setAddress}
+              placeholder="مثال: بجوار الباب الشرقي"
             />
 
             <Field
