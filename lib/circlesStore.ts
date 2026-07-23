@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { CIRCLES, getCircleById as getSeedCircleById } from '@/data/circles';
-import type { Circle } from '@/types/circle';
+import type { AgeGroup, Circle } from '@/types/circle';
 
 const STORAGE_KEY = 'halqat.userCircles.v1';
 
@@ -41,11 +41,23 @@ export function coordsForDistrict(district: string): { lat: number; lng: number 
   return DISTRICT_COORDS[district] ?? { lat: 24.7136, lng: 46.6753 };
 }
 
+function normalizeCircle(raw: Circle & { ageGroup?: AgeGroup }): Circle {
+  if (Array.isArray(raw.ageGroups) && raw.ageGroups.length > 0) {
+    return { ...raw, ageGroups: raw.ageGroups };
+  }
+  if (raw.ageGroup) {
+    const { ageGroup, ...rest } = raw;
+    return { ...rest, ageGroups: [ageGroup] };
+  }
+  return { ...raw, ageGroups: ['كبار'] };
+}
+
 async function readUserCircles(): Promise<Circle[]> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
   try {
-    return JSON.parse(raw) as Circle[];
+    const parsed = JSON.parse(raw) as Array<Circle & { ageGroup?: AgeGroup }>;
+    return parsed.map(normalizeCircle);
   } catch {
     return [];
   }
@@ -74,7 +86,7 @@ export type NewCircleInput = {
   startsAt: string;
   durationMin: number;
   focus?: string;
-  ageGroup: Circle['ageGroup'];
+  ageGroups: AgeGroup[];
   capacity: number;
   address?: string;
   teacherName?: string;
@@ -83,6 +95,8 @@ export type NewCircleInput = {
 
 export async function addCircle(input: NewCircleInput): Promise<Circle> {
   const { lat, lng } = coordsForDistrict(input.district);
+  const ageGroups =
+    input.ageGroups.length > 0 ? input.ageGroups : (['كبار'] as AgeGroup[]);
   const circle: Circle = {
     id: `user-${Date.now()}`,
     title: input.title.trim(),
@@ -91,7 +105,7 @@ export async function addCircle(input: NewCircleInput): Promise<Circle> {
     startsAt: input.startsAt,
     durationMin: input.durationMin,
     focus: input.focus?.trim() || undefined,
-    ageGroup: input.ageGroup,
+    ageGroups,
     capacity: input.capacity,
     joinedCount: 0,
     address: input.address?.trim() || undefined,
@@ -104,4 +118,8 @@ export async function addCircle(input: NewCircleInput): Promise<Circle> {
   const existing = await readUserCircles();
   await writeUserCircles([circle, ...existing]);
   return circle;
+}
+
+export function formatAgeGroups(ageGroups: AgeGroup[]): string {
+  return ageGroups.join(' · ');
 }

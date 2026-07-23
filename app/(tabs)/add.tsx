@@ -79,6 +79,11 @@ export default function AddCircleScreen() {
       return;
     }
 
+    if (ageGroup.length < 1) {
+      setError('اختر فئة عمرية واحدة واحدةً على الأقل');
+      return;
+    }
+
     const capacityNum = Number(capacity);
     const durationNum = Number(durationMin);
     if (!Number.isFinite(capacityNum) || capacityNum < 3) {
@@ -100,7 +105,7 @@ export default function AddCircleScreen() {
         startsAt,
         durationMin: durationNum,
         focus,
-        ageGroup: ageGroup[0] ?? 'كبار',
+        ageGroups: ageGroup,
         capacity: capacityNum,
         address,
         teacherName,
@@ -176,8 +181,8 @@ export default function AddCircleScreen() {
               label="الفئة العمرية"
               options={AGE_GROUPS}
               selected={ageGroup}
-              onChange={(next) => setAgeGroup((next as AgeGroup[]).slice(-1))}
-              multi={false}
+              onChange={(next) => setAgeGroup(next as AgeGroup[])}
+              multi
             />
             <FilterChips
               label="اليوم"

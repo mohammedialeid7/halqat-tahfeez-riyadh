@@ -10,7 +10,7 @@ export type Circle = {
   startsAt: string; // ISO
   durationMin: number;
   focus?: string;
-  ageGroup: AgeGroup;
+  ageGroups: AgeGroup[];
   capacity: number;
   joinedCount: number;
   address?: string;

@@ -43,7 +43,10 @@ export default function HomeScreen() {
         if (districts.length > 0 && !districts.includes(circle.district)) {
           return false;
         }
-        if (ageGroups.length > 0 && !ageGroups.includes(circle.ageGroup)) {
+        if (
+          ageGroups.length > 0 &&
+          !ageGroups.some((group) => circle.ageGroups.includes(group))
+        ) {
           return false;
         }
         if (timeSlots.length > 0 && !timeSlots.includes(getTimeSlot(circle.startsAt))) {
