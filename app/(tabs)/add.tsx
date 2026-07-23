@@ -21,13 +21,6 @@ import { AGE_GROUPS, DISTRICTS, TIME_SLOTS } from '@/data/circles';
 import { addCircle } from '@/lib/circlesStore';
 import type { AgeGroup, TimeSlot } from '@/types/circle';
 
-const DAY_OPTIONS = [
-  { label: 'اليوم', days: 0 },
-  { label: 'غداً', days: 1 },
-  { label: 'بعد غد', days: 2 },
-  { label: 'خلال أسبوع', days: 7 },
-] as const;
-
 const SLOT_HOURS: Record<TimeSlot, [number, number]> = {
   صباح: [9, 30],
   ظهر: [13, 15],
@@ -50,20 +43,17 @@ export default function AddCircleScreen() {
   const [durationMin, setDurationMin] = useState('60');
   const [district, setDistrict] = useState<string[]>(['العليا']);
   const [ageGroup, setAgeGroup] = useState<AgeGroup[]>(['كبار']);
-  const [dayLabel, setDayLabel] = useState<string[]>(['اليوم']);
   const [timeSlot, setTimeSlot] = useState<TimeSlot[]>(['عصر']);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const startsAt = useMemo(() => {
-    const day = DAY_OPTIONS.find((d) => d.label === dayLabel[0]) ?? DAY_OPTIONS[0];
     const slot = (timeSlot[0] ?? 'عصر') as TimeSlot;
     const [hour, minute] = SLOT_HOURS[slot];
     const date = new Date();
-    date.setDate(date.getDate() + day.days);
     date.setHours(hour, minute, 0, 0);
     return date.toISOString();
-  }, [dayLabel, timeSlot]);
+  }, [timeSlot]);
 
   const onSubmit = async () => {
     if (title.trim().length < 3) {
@@ -183,13 +173,6 @@ export default function AddCircleScreen() {
               selected={ageGroup}
               onChange={(next) => setAgeGroup(next as AgeGroup[])}
               multi
-            />
-            <FilterChips
-              label="اليوم"
-              options={DAY_OPTIONS.map((d) => d.label)}
-              selected={dayLabel}
-              onChange={(next) => setDayLabel(next.slice(-1))}
-              multi={false}
             />
             <FilterChips
               label="الوقت"
